@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Clock with Alarm</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+
+    .clock {
+      font-size: 64px;
+      letter-spacing: 5px;
+      background: #00000080;
+      padding: 20px 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #ffffff80;
+      transition: all 0.5s ease-in-out;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #00ffe5, 0 0 20px #00ffe5;
+      }
+      to {
+        text-shadow: 0 0 20px #00ffe5, 0 0 40px #00ffe5;
+      }
+    }
+
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .controls input {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .controls button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #00ffe5;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .controls button:hover {
+      background: #00bfa5;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⏰ Digital Clock with Alarm</h1>
+  <div class="clock" id="clock">00:00:00</div>
+
+  <div class="controls">
+    <label>Set Alarm Time (24hr format - HH:MM:SS)</label>
+    <input type="time" id="alarmTime" step="1">
+    <button onclick="setAlarm()">Set Alarm</button>
+    <button onclick="clearAlarm()">Clear Alarm</button>
+  </div>
+
+  <!-- Tick Sound -->
+  <audio id="tickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-tick-tock-clock-timer-1045.mp3" preload="auto"></audio>
+
+  <!-- Alarm Sound -->
+  <audio id="alarmSound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto" loop></audio>
+
+  <script>
+    const clock = document.getElementById('clock');
+    const tickSound = document.getElementById('tickSound');
+    const alarmSound = document.getElementById('alarmSound');
+    let alarmTime = null;
+    let alarmTimeout = null;
+
+    function updateClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+
+      const currentTime = `${hrs}:${mins}:${secs}`;
+      clock.textContent = currentTime;
+
+      tickSound.currentTime = 0;
+      tickSound.play();
+
+      if (alarmTime === currentTime) {
+        alarmSound.play();
+      }
+    }
+
+    function setAlarm() {
+      const alarmInput = document.getElementById('alarmTime').value;
+      if (alarmInput) {
+        alarmTime = alarmInput;
+        alert("Alarm set for " + alarmTime);
+      }
+    }
+
+    function clearAlarm() {
+      alarmTime = null;
+      alarmSound.pause();
+      alarmSound.currentTime = 0;
+      alert("Alarm cleared!");
+    }
+
+    // Update clock every second
+    setInterval(updateClock, 1000);
+  </script>
+
+</body>
+</html>
